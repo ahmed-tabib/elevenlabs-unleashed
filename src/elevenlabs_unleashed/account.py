@@ -95,7 +95,7 @@ def _get_confirmation_link(mail: str):
     raise Exception("Confirmation link not found")
 
 
-def create_account():
+def create_account(timeout=10, proxy=None):
     """
     Create an account on Elevenlabs and return the email, password and api key
     """
@@ -104,6 +104,8 @@ def create_account():
     options.add_argument("--disable-logging")
     options.add_argument("--log-level=3")
     options.add_argument("--window-size=1440,1280")
+    if proxy != None:
+        options.add_argument("--proxy-server=" + proxy); #proxy string in the format: "{scheme}://{host}:{port}", e.g. "socks5://127.0.0.1:1765"
     driver = uc.Chrome(options=options)
 
     driver.get(SIGNUP_URL)
@@ -111,10 +113,10 @@ def create_account():
     email = _generate_email()
     password = _generate_password()
 
-    # cookie_button = WebDriverWait(driver, 10).until(lambda driver: driver.find_element(By.ID, "CybotCookiebotDialogBodyButtonAccept"))
+    # cookie_button = WebDriverWait(driver, timeout).until(lambda driver: driver.find_element(By.ID, "CybotCookiebotDialogBodyButtonAccept"))
     # cookie_button.click()
 
-    email_input = WebDriverWait(driver, 10).until(
+    email_input = WebDriverWait(driver, timeout).until(
         lambda driver: driver.find_element(By.NAME, "email")
     )
     email_input.send_keys(email)
@@ -125,11 +127,11 @@ def create_account():
     terms_checkbox = driver.find_element(By.NAME, "terms")
     driver.execute_script("arguments[0].click();", terms_checkbox)
 
-    captcha_iframe = WebDriverWait(driver, 10).until(
+    captcha_iframe = WebDriverWait(driver, timeout).until(
         lambda driver: driver.find_element(By.XPATH, "//iframe[@tabindex='0']")
     )
     driver.switch_to.frame(captcha_iframe)
-    captcha_checkbox = WebDriverWait(driver, 10).until(
+    captcha_checkbox = WebDriverWait(driver, timeout).until(
         lambda driver: driver.find_element(By.ID, "checkbox")
     )
     # Wait for aria-checked to be true
@@ -149,12 +151,12 @@ def create_account():
 
     driver.get(link)
 
-    close_button = WebDriverWait(driver, 30).until(
+    close_button = WebDriverWait(driver, timeout).until(
         lambda driver: driver.find_element(By.XPATH, "//button[text()='Close']")
     )
     close_button.click()
 
-    email_input = WebDriverWait(driver, 10).until(
+    email_input = WebDriverWait(driver, timeout).until(
         lambda driver: driver.find_element(By.XPATH, "//input[@type='email']")
     )
     email_input.send_keys(email)
@@ -166,13 +168,13 @@ def create_account():
     submit_button = driver.find_element(By.XPATH, "//button[@type='submit']")
     submit_button.click()
 
-    name_input = WebDriverWait(driver, 10).until(
+    name_input = WebDriverWait(driver, timeout).until(
         lambda driver: driver.find_element(By.NAME, "name")
     )
     sleep(0.5)
     name_input.send_keys(email)
 
-    from_list = WebDriverWait(driver, 10).until(
+    from_list = WebDriverWait(driver, timeout).until(
         lambda driver: driver.find_element(
             By.XPATH, "//button[@aria-haspopup='listbox']"
         )
@@ -181,18 +183,18 @@ def create_account():
     from_list.send_keys(Keys.ARROW_DOWN)
 
     sleep(0.1)
-    li_option = WebDriverWait(driver, 10).until(
+    li_option = WebDriverWait(driver, timeout).until(
         lambda driver: driver.find_element(By.XPATH, "//li[@role='option']")
     )
     li_option.click()
 
-    next_button = WebDriverWait(driver, 10).until(
+    next_button = WebDriverWait(driver, timeout).until(
         lambda driver: driver.find_element(By.CLASS_NAME, "btn-primary")
     )
     next_button.click()
 
     sleep(0.1)
-    containers = WebDriverWait(driver, 10).until(
+    containers = WebDriverWait(driver, timeout).until(
         lambda driver: driver.find_elements(By.CLASS_NAME, "flex-wrap")
     )
 
@@ -201,13 +203,13 @@ def create_account():
         sleep(0.2)
 
     sleep(0.5)
-    stacks = WebDriverWait(driver, 10).until(
+    stacks = WebDriverWait(driver, timeout).until(
         lambda driver: driver.find_elements(By.CLASS_NAME, "stack")
     )
 
     stacks[-1].find_elements(By.TAG_NAME, "button")[-1].click()
 
-    menu_list = WebDriverWait(driver, 10).until(
+    menu_list = WebDriverWait(driver, timeout).until(
         lambda driver: driver.find_element(
             By.CSS_SELECTOR, 'div[role="menu"][style*="visibility: visible"]'
         )
@@ -215,7 +217,7 @@ def create_account():
     profile_button = menu_list.find_element(By.TAG_NAME, "button")
     profile_button.click()
 
-    api_key_input = WebDriverWait(driver, 10).until(
+    api_key_input = WebDriverWait(driver, timeout).until(
         lambda driver: driver.find_element(By.XPATH, "//input[@type='password']")
     )
 
