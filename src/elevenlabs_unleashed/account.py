@@ -149,7 +149,7 @@ def create_account():
 
     driver.get(link)
 
-    close_button = WebDriverWait(driver, 10).until(
+    close_button = WebDriverWait(driver, 30).until(
         lambda driver: driver.find_element(By.XPATH, "//button[text()='Close']")
     )
     close_button.click()
