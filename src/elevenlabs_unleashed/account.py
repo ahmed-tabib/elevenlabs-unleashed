@@ -214,9 +214,21 @@ def create_account(timeout=10, proxy=None):
             By.CSS_SELECTOR, 'div[role="menu"][style*="visibility: visible"]'
         )
     )
-    profile_button = menu_list.find_element(By.TAG_NAME, "button")
+    #profile_button = menu_list.find_element(By.TAG_NAME, "button")
+    profile_button = WebDriverWait(driver, timeout).until(
+        lambda driver: driver.find_element(
+            By.ID, "menu-button-:rp:"
+        )
+    )
     profile_button.click()
-
+    
+    profile_api_button = WebDriverWait(driver, timeout).until(
+        lambda driver: driver.find_element(
+            By.ID, "menu-list-:rp:-menuitem-:r11:"
+        )
+    )
+    profile_api_button.click()
+    
     api_key_input = WebDriverWait(driver, timeout).until(
         lambda driver: driver.find_element(By.XPATH, "//input[@type='password']")
     )
