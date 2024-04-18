@@ -95,12 +95,12 @@ def _get_confirmation_link(mail: str):
     raise Exception("Confirmation link not found")
 
 
-def create_account(timeout=10, proxy=None):
+def create_account(timeout=10, captcha_timeout=20, proxy=None, show_browser=False):
     """
     Create an account on Elevenlabs and return the email, password and api key
     """
     options = Options()
-    options.headless = os.environ.get("DEBUG", "0") == "0"
+    options.headless = (not show_browser)
     options.add_argument("--disable-logging")
     options.add_argument("--log-level=3")
     options.add_argument("--window-size=1440,1280")
@@ -139,7 +139,7 @@ def create_account(timeout=10, proxy=None):
     t0 = monotonic()
     while captcha_checkbox.get_attribute("aria-checked") == "false":
         sleep(0.1)
-        if monotonic() - t0 > 20:
+        if monotonic() - t0 > captcha_timeout:
             raise Exception("Captcha not checked in time")
 
     driver.switch_to.default_content()
