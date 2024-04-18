@@ -104,8 +104,9 @@ def create_account(timeout=10, proxy=None):
     options.add_argument("--disable-logging")
     options.add_argument("--log-level=3")
     options.add_argument("--window-size=1440,1280")
+    options.add_argument("--ignore-certificate-errors") # some shady proxies cause cert errors, we don't care!
     if proxy != None:
-        options.add_argument("--proxy-server=" + proxy); #proxy string in the format: "{scheme}://{host}:{port}", e.g. "socks5://127.0.0.1:1765"
+        options.add_argument("--proxy-server=" + proxy); # proxy string in the format: "{scheme}://{host}:{port}", e.g. "socks5://127.0.0.1:1765"
     driver = uc.Chrome(options=options)
 
     driver.get(SIGNUP_URL)
